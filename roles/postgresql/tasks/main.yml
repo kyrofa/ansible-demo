@@ -1,0 +1,23 @@
+---
+- name: Install database
+  become: yes
+  loop: "{{ apt_packages }}"
+  apt:
+    name: "{{ item }}"
+    state: present
+    cache_valid_time: 86400  # 1 day
+
+- name: Create postgresql user
+  become: true
+  become_user: postgres
+  postgresql_user:
+    name: '{{ database_user }}'
+    password: '{{ database_password }}'
+    encrypted: true
+
+- name: Create postgresql database
+  become: true
+  become_user: postgres
+  postgresql_db:
+    name: '{{ database_name }}'
+    owner: '{{ database_user }}'

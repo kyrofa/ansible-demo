@@ -1,0 +1,10 @@
+---
+# All hosts get the common role
+- name: Common configuration
+  hosts: all
+  roles: [common]
+
+# Hosts in the postgresql group get the postgresql role
+- name: PostgreSQL configuration
+  hosts: postgresql
+  roles: [postgresql]

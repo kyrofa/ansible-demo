@@ -1,0 +1,24 @@
+---
+- name: Configure SSH
+  become: yes
+  notify: restart ssh
+  copy:
+    src: etc/ssh/sshd_config
+    dest: /etc/ssh/sshd_config
+
+- name: Enable firewall
+  become: yes
+  ufw:
+    state: enabled
+
+- name: Allow SSH through firewall
+  become: yes
+  ufw:
+    rule: allow
+    name: OpenSSH
+
+- name: Configure automatic security updates
+  become: yes
+  copy:
+    src: etc/apt/apt.conf.d/50unattended-upgrades
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades

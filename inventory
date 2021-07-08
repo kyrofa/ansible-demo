@@ -1,0 +1,9 @@
+[production]
+production.example.com
+
+[staging]
+staging.example.com
+
+[postgresql:children]
+production
+staging
