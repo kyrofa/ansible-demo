@@ -8,3 +8,8 @@
 - name: PostgreSQL configuration
   hosts: postgresql
   roles: [postgresql]
+
+# Hosts in the web group get the nginx and lets-encrypt roles
+- name: Web configuration
+  hosts: web
+  roles: [nginx, lets-encrypt]

@@ -1,0 +1,56 @@
+---
+- name: Install nginx
+  become: yes
+  loop: "{{ apt_packages }}"
+  apt:
+    name: "{{ item }}"
+    state: present
+    cache_valid_time: 86400  # 1 day
+
+- name: disable default site
+  become: yes
+  file:
+    state: absent
+    path: /etc/nginx/sites-enabled/default
+
+- name: site content
+  become: yes
+  copy:
+    src: var/www/example/
+    dest: /var/www/example
+
+- name: Allow HTTP through firewall
+  become: yes
+  ufw:
+    rule: allow
+    port: 80
+    proto: tcp
+
+- name: Allow HTTPS through firewall
+  when: https == "enabled"
+  become: yes
+  ufw:
+    rule: allow
+    port: 443
+    proto: tcp
+
+- name: HTTP site configuration
+  when: https != "enabled"
+  become: yes
+  template:
+    src: etc/nginx/sites-available/example.conf.j2
+    dest: /etc/nginx/sites-available/example.conf
+
+- name: HTTPS site configuration
+  when: https == "enabled"
+  become: yes
+  template:
+    src: etc/nginx/sites-available/example_https.conf.j2
+    dest: /etc/nginx/sites-available/example.conf
+
+- name: Enable site configuration
+  become: yes
+  file:
+    state: link
+    src: /etc/nginx/sites-available/example.conf
+    path: /etc/nginx/sites-enabled/example.conf

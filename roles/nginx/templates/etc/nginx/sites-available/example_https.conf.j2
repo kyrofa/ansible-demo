@@ -1,0 +1,18 @@
+server {
+	listen 443 ssl;
+
+	ssl_certificate {{ ssl_certificate }};
+	ssl_certificate_key {{ ssl_certificate_key }};
+
+	server_name {{ hostname }};
+
+	location / {
+		root /var/www/example;
+	}
+}
+
+server {
+    listen 80;
+    server_name {{ hostname }};
+    return 301 https://$host$request_uri;
+}
